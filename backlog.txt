@@ -1,0 +1,7 @@
+# Logging best practice
+
++ log all the relevant information (req, headers, response body)
++ don't log sensitive information such as secret or password. blacklist them
++ store it in a readable format (json) for easy processing
++ autorotate your log file daily to prevent it from growing too large
++ trace errors in your log file
