@@ -1,0 +1,4 @@
++ multiple sign in from different devices
++ store device information
++ store real time status
++ store last logged in time
