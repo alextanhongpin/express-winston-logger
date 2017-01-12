@@ -1,21 +1,19 @@
-const winston = require('winston');
-const expressWinston = require('express-winston');
-expressWinston.requestWhitelist.push('body');
-expressWinston.responseWhitelist.push('body');
+const winston = require('winston')
+const expressWinston = require('express-winston')
+const DailyRotateFile = require('winston-daily-rotate-file')
+const fs = require('fs')
+const env = process.env.NODE_ENV || 'development'
+const logDir = 'log'
 
-expressWinston.bodyBlacklist.push('password');
+expressWinston.requestWhitelist.push('body')
+expressWinston.responseWhitelist.push('body')
+expressWinston.bodyBlacklist.push('password')
+// expressWinston.requestWhitelist.splice(expressWinston.requestWhitelist.indexOf('headers'), 1)
 
-//expressWinston.requestWhitelist.splice(expressWinston.requestWhitelist.indexOf('headers'), 1);
-
-const DailyRotateFile = require('winston-daily-rotate-file');
-winston.emitErrs = true;
-
-const fs = require('fs');
-const env = process.env.NODE_ENV || 'development';
-const logDir = 'log';
+winston.emitErrs = true
 
 if (!fs.existsSync(logDir)) {
-  fs.mkdirSync(logDir);
+  fs.mkdirSync(logDir)
 }
 
 const requestLogger = expressWinston.logger({
@@ -42,9 +40,9 @@ const requestLogger = expressWinston.logger({
     exitOnError: false,
     meta: true,
     // requestFilter: function (req, propName) { 
-    //     return req[propName];
+    //     return req[propName]
     // } 
-});
+})
 
 const errorLogger = expressWinston.errorLogger({
     transports: [
@@ -68,6 +66,6 @@ const errorLogger = expressWinston.errorLogger({
     msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
     exitOnError: false,
     meta: true,
-});
+})
 
 module.exports = { error: errorLogger, request: requestLogger }

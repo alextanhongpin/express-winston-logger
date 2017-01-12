@@ -1,5 +1,3 @@
-
-
 const express = require('express')
 const app = express()
 const PORT = 3000
@@ -9,7 +7,8 @@ const path = require('path')
 const morgan = require('morgan')
 const appDir = path.dirname(require.main.filename)
 
-const logger = require('./logger.js')
+const logger = require('./middleware/logger.js')
+
 app.get('/', function (req, res) {
   res.status(200).json({
     message: 'hello world'
@@ -31,10 +30,10 @@ app.get('/logs', (req, res) => {
   // carry out pagination for users
   let fileNames = []
   fs.readdir(appDir + '/log', function(err, files) {
-      if (err) return;
+      if (err) return
       files.forEach(function(f) {
           fileNames.push(f)
-      });
+      })
     res.status(200).json(fileNames)
   })
 })
@@ -52,18 +51,16 @@ app.get('/logs/:logname', (req, res) => {
      return console.log(err);
    }
 
-   let output = null;
+   let output = null
    // "newline-delimited JSON" or "ndjson";
    try {
      output = data.split('\n').map((line) => {
        if (isJSON(line)) {
-         return JSON.parse(line);
+         return JSON.parse(line)
        } else {
-         return line;
+         return line
        }
-     });
-     console.log('outputping', output)
-     console.log('outputing')
+     })
      res.status(200).json(output)
      return
    } catch(e) {
@@ -72,19 +69,18 @@ app.get('/logs/:logname', (req, res) => {
        message: e
      })
    }
- });
- // 
-});
+ })
+})
 
 function isJSON(str) {
   try {
-      JSON.parse(str);
+      JSON.parse(str)
   } catch (e) {
-      return false;
+      return false
   }
-  return true;
+  return true
 }
-app.use(morgan('combined', { "stream": logger.stream }));
+app.use(morgan('combined', { "stream": logger.stream }))
 
 // express-winston errorLogger makes sense AFTER the router.
 app.use(logger.error)
